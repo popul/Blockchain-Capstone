@@ -119,6 +119,17 @@ contract('TestERC721Mintable', accounts => {
             const tokenOwner = await erc721Contract.ownerOf.call(tokenId);
             assert.equal(tokenOwner, accounts[3], "Token owner not correct");
         })
+
+        it('should transfer token from one owner to another', async function () { 
+            const tokenId = 100;
+            await erc721Contract.mint(accounts[4], tokenId, { from: owner });
+
+            await erc721Contract.setApprovalForAll(accounts[5], true, { from: accounts[4] });
+            const r = await erc721Contract.transferFrom(accounts[4], accounts[6], tokenId, { from: accounts[5] });
+
+            const tokenOwner = await erc721Contract.ownerOf.call(tokenId);
+            assert.equal(tokenOwner, accounts[6], "Token owner not correct");
+        })        
     });
 
     describe("ERC721Enumerable", async () => {

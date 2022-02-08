@@ -242,7 +242,7 @@ contract ERC721 is Pausable, ERC165 {
     function _transferFrom(address from, address to, uint256 tokenId) internal {
         require(from == _tokenOwner[tokenId], "From address is not the owner of the given token");
         require(to != address(0), "Invalid address");
-        require(_tokenApprovals[tokenId] == msg.sender, "Sender is not the approved address");
+        require(_isApprovedOrOwner(msg.sender, tokenId));
 
        _tokenApprovals[tokenId] = address(0);
 
