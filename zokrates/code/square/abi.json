@@ -1,12 +1,12 @@
 {
   "inputs": [
     {
-      "name": "field_a",
+      "name": "a",
       "public": false,
       "type": "field"
     },
     {
-      "name": "field_b",
+      "name": "b",
       "public": true,
       "type": "field"
     }
