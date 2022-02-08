@@ -1,14 +1,12 @@
 // migrating the appropriate contracts
 const SquareVerifier = artifacts.require("SquareVerifier");
 const SolnSquareVerifier = artifacts.require("SolnSquareVerifier");
-const Ownable= artifacts.require("Ownable");
-const Pausable= artifacts.require("Pausable");
+const ERC721Mintable = artifacts.require("ERC721Mintable");
 
 module.exports = async function(deployer) {
   await deployer.deploy(SquareVerifier);
   await deployer.deploy(SolnSquareVerifier);
-  await deployer.deploy(Ownable);
-  await deployer.deploy(Pausable);
+  await deployer.deploy(ERC721Mintable, "EthLand", "ETL");
 
   const squareVerifier = await SquareVerifier.deployed();
   const solnSquareVerifier = await SolnSquareVerifier.deployed();
