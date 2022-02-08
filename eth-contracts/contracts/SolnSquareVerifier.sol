@@ -1,8 +1,26 @@
 pragma solidity >=0.4.21 <0.6.0;
 
+import "./SquareVerifier.sol";
+import "./ERC721Mintable.sol";
+
 // TODO define a contract call to the zokrates generated solidity contract <Verifier> or <renamedVerifier>
+// contract SolnSquareVerifier is Ownable {
+contract SolnSquareVerifier {
 
+    // address private owner;
+    SquareVerifier private squareVerifier;
 
+    constructor() public {
+    }
+
+    function setSquareVerifierContract(address _SquareVerifier)
+        public
+        // onlyOwner
+    {
+        address addr = address(uint160(_SquareVerifier));
+        squareVerifier = SquareVerifier(addr);
+    }
+}
 
 // TODO define another contract named SolnSquareVerifier that inherits from your ERC721Mintable class
 

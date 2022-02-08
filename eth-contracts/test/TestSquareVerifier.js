@@ -11,6 +11,11 @@ contract('SquareVerifier', async (accounts) => {
         const result = await squareVerifier.verifyTx(proof.proof, proof.inputs);
         assert.equal(result, true, 'verification failed');
     });
+    it('verifyTx should fails', async () => {
+        const squareVerifier = await SquareVerifier.deployed();
+        const result = await squareVerifier.verifyTx(proof.proof, [1, 5]);
+        assert.equal(result, false, 'verification must fail');
+    });
 });
     
 // Test verification with incorrect proof

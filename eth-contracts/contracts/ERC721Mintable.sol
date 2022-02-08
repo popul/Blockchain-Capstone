@@ -14,10 +14,25 @@ contract Ownable {
     //  4) fill out the transferOwnership function
     //  5) create an event that emits anytime ownerShip is transfered (including in the constructor)
 
+    address private _owner;
+    event OwnerChanged(address newOwner);
+
+    modifier onlyOwner() { 
+        require(msg.sender == _owner, "Only the owner can perform this action");
+        _;
+    }
+
+    constructor() public {
+        _owner = msg.sender;
+        emit OwnerChanged(_owner);
+    }
+
     function transferOwnership(address newOwner) public onlyOwner {
         // TODO add functionality to transfer control of the contract to a newOwner.
         // make sure the new owner is a real address
-
+        require(tx.origin == msg.sender, "Must be a real address");
+        _owner = newOwner;
+        emit OwnerChanged(newOwner);
     }
 }
 
@@ -27,6 +42,31 @@ contract Ownable {
 //  3) create an internal constructor that sets the _paused variable to false
 //  4) create 'whenNotPaused' & 'paused' modifier that throws in the appropriate situation
 //  5) create a Paused & Unpaused event that emits the address that triggered the event
+
+contract Pausable is Ownable {
+    bool private _paused;
+
+    event Paused(address addr);
+    event Unpaused(address addr);
+
+    function setPaused(bool paused)
+        public
+        onlyOwner
+    {
+        _paused = paused;
+        if (_paused) {
+            emit Paused(msg.sender);
+        } else {
+            emit Unpaused(msg.sender);
+        }
+    }
+
+    constructor()
+        public
+    {
+        _paused = false;
+    }
+}
 
 contract ERC165 {
     bytes4 private constant _INTERFACE_ID_ERC165 = 0x01ffc9a7;
@@ -418,6 +458,7 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
     // TODO: Create private vars for token _name, _symbol, and _baseTokenURI (string)
 
     // TODO: create private mapping of tokenId's to token uri's called '_tokenURIs'
+    mapping(uint256 => string) private _tokenURIs;
 
     bytes4 private constant _INTERFACE_ID_ERC721_METADATA = 0x5b5e139f;
     /*
@@ -451,6 +492,13 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
 
 }
 
+contract ERC721Mintable {
+    constructor()
+        public
+    {
+
+    }
+}
 //  TODO's: Create CustomERC721Token contract that inherits from the ERC721Metadata contract. You can name this contract as you please
 //  1) Pass in appropriate values for the inherited ERC721Metadata contract
 //      - make the base token uri: https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/
