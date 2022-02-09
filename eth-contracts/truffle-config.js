@@ -1,6 +1,7 @@
-var HDWalletProvider = require("@truffle/hdwallet-provider");
-var mnemonic = "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat";
-var privateKey = "589cb6d87d643cc286c85bc60c784048230ada610ea1af04adc0ec0da52a8f62";
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+
+const mnemonic = "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat";
+const privateKey = "589cb6d87d643cc286c85bc60c784048230ada610ea1af04adc0ec0da52a8f62";
 
 module.exports = {
   networks: {
