@@ -33,19 +33,42 @@ contract('SolnSquareVerifier', accounts => {
         })
 
         it('should not mint with wrong proof', async () => {
+            let throwExp = false;
             const proof = require('./proof.json');
-            const r = await contract.mint(proof.proof, [2, 1], accounts[1], 1);
 
-            assert.equal(r.receipt.message, "revert", "Should be reverted if wrong proof");
+            try {
+                const r = await contract.mint(proof.proof, [2, 1], accounts[1], 1);
+                if (r.receipt.message === "revert") {
+                    throwExp = true;
+                }
+            }
+            catch (e) {
+                throwExp = true;
+            }
+            finally {
+                assert.equal(throwExp, true, "Should be reverted if wrong proof");
+            }
         })
 
-        it('should not with same proofs', async () => {
+        it('should not mint with same proofs', async () => {
             const proof = require('./proof.json');
 
             await contract.mint(proof.proof, proof.inputs, accounts[1], 1);
-            const r = await contract.mint(proof.proof, proof.inputs, accounts[1], 2);
 
-            assert.equal(r.receipt.message, "revert", "Should be reverted if proof is reused");
+            let throwExp = false;
+            try {
+                const r = await contract.mint(proof.proof, proof.inputs, accounts[1], 2);
+
+                if (r.receipt.message === "revert") {
+                    throwExp = true;
+                }
+            }
+            catch (e) {
+                throwExp = true;
+            }
+            finally { 
+                assert.equal(throwExp, true, "Should be reverted if proof is reused");
+            }
         })
     });
 });

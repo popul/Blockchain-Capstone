@@ -2,7 +2,7 @@ const Ownable = artifacts.require('Ownable');
 const Pausable = artifacts.require('Pausable');
 const ERC721Mintable = artifacts.require('ERC721Mintable');
 
-contract('TestERC721Mintable', accounts => {
+contract('TestERC721Mintable', async (accounts) => {
 
     const owner = accounts[0];
 
@@ -12,11 +12,21 @@ contract('TestERC721Mintable', accounts => {
             ownableContract = await ERC721Mintable.deployed();
         })
         it('only owner can call transferOwnership', async () => {
-            const r = await ownableContract.transferOwnership(accounts[2], { from: accounts[1] });
-            assert.equal(r.receipt.message, 'revert', "Only owner can call transferOwnership");
-
-            await ownableContract.transferOwnership(accounts[1], { from: owner });
-            await ownableContract.transferOwnership(owner, { from: accounts[1] });
+            let throwExp = false;
+            try {
+                const r = await ownableContract.transferOwnership(accounts[2], { from: accounts[1] }); 
+                if (r.receipt.message === "revert") {
+                    throwExp = true;
+                }
+            }
+            catch (e) {
+                throwExp = true;
+            }
+            finally {
+                assert.equal(throwExp, true, "Only owner can call transferOwnership");
+                await ownableContract.transferOwnership(accounts[1], { from: owner });
+                await ownableContract.transferOwnership(owner, { from: accounts[1] });
+            }
         });
         it('should send OwnerChanged event when onwer changed', async() => {
             const r = await ownableContract.transferOwnership(accounts[1], { from: owner });
@@ -33,11 +43,21 @@ contract('TestERC721Mintable', accounts => {
             pausableContract = await ERC721Mintable.deployed();
         });
         it('only owner can call setPaused', async () => {
-            const r = await pausableContract.setPaused(true, { from: accounts[1] });
-            assert.equal(r.receipt.message, 'revert', "Only owner can call setPaused");
-
-            await pausableContract.setPaused(true, { from: owner });
-            await pausableContract.setPaused(false, { from: owner });
+            let throwExp = false;
+            try {
+                const r = await pausableContract.setPaused(true, { from: accounts[1] });
+                if (r.receipt.message === "revert") {
+                    throwExp = true;
+                }
+            }
+            catch (e) {
+                throwExp = true;
+            }
+            finally {
+                assert.equal(throwExp, true, "Only owner can call setPaused");
+                await pausableContract.setPaused(true, { from: owner });
+                await pausableContract.setPaused(false, { from: owner });
+            }
         });
         it('should send Paused and Unpaused events', async() => {
             const rPaused = await pausableContract.setPaused(true, { from: owner });
@@ -68,8 +88,19 @@ contract('TestERC721Mintable', accounts => {
         });
 
         it('should fail when minting when address is not contract owner', async function () { 
-            const r = await erc721MintableContract.mint(accounts[2], 2, { from: accounts[1] }); 
-            assert.equal(r.receipt.message, 'revert', "Mint should fail when address is not contract owner");
+            let throwExp = false;
+            try {
+                const r = await erc721MintableContract.mint(accounts[2], 2, { from: accounts[1] }); 
+                if (r.receipt.message === 'revert') {
+                    throwExp = true;
+                }
+            }
+            catch (e) {
+                throwExp = true;
+            }
+            finally {
+                assert.equal(throwExp, true, "Mint should fail when address is not contract owner");
+            }
         });
     });
 
