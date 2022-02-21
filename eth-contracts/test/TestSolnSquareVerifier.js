@@ -53,10 +53,9 @@ contract('SolnSquareVerifier', accounts => {
         it('should not mint with same proofs', async () => {
             const proof = require('./proof.json');
 
-            await contract.mint(proof.proof, proof.inputs, accounts[1], 1);
-
             let throwExp = false;
             try {
+                await contract.mint(proof.proof, proof.inputs, accounts[1], 1);
                 const r = await contract.mint(proof.proof, proof.inputs, accounts[1], 2);
 
                 if (r.receipt.message === "revert") {
